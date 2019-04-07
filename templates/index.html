@@ -1,0 +1,121 @@
+<html>
+	<head>
+		<!-- CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+		<link rel="stylesheet" type="text/css" href="diff2html.min.css">
+		
+		<!-- Javascripts -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/scala.min.js"></script>
+		<script type="text/javascript" src="diff2html.min.js"></script>
+		<script type="text/javascript" src="diff2html-ui.min.js"></script>
+		
+		<script>
+			function showDiff() {
+				var data = $('#diff_text').text();
+			    var container = '#url-diff-container';
+		        var diff2htmlUi = new Diff2HtmlUI({diff: data});
+		        
+		        var searchParam = 'diff';
+
+ 				var $container = $('body');
+ 				var $outputFormat = $('#diff-url-options-output-format');
+  				var $showFiles = $('#diff-url-options-show-files');
+  				var $matching = $('#diff-url-options-matching');
+  				var $wordsThreshold = $('#diff-url-options-match-words-threshold');
+  				var $matchingMaxComparisons = $('#diff-url-options-matching-max-comparisons');
+  				
+				var outputFormat = $outputFormat.val();
+    			var showFiles = $showFiles.is(':checked');
+    			var matching = $matching.val();
+    			var wordsThreshold = $wordsThreshold.val();
+    			var matchingMaxComparisons = $matchingMaxComparisons.val();
+
+		        if (outputFormat === 'side-by-side') {
+		          $container.css({'width': '100%'});
+		        } else {
+		          $container.css({'width': ''});
+		        }
+
+		        var params = {};
+		        params['outputFormat'] = outputFormat;
+		        params['showFiles'] = showFiles;
+		        params['matching'] = matching;
+		        params['wordsThreshold'] = wordsThreshold;
+		        params['matchingMaxComparisons'] = matchingMaxComparisons;
+		        params['synchronisedScroll'] = params['synchronisedScroll'] || true;
+
+		        diff2htmlUi.draw(container, params);
+		        diff2htmlUi.fileListCloseable(container, params['fileListCloseable'] || false);
+		        params['highlight'] && diff2htmlUi.highlightCode(container);
+			}
+			//"diff --git a/a.txt b/a.txt\nindex d64e8af..22e59fc 100644\n--- a/a.txt\n+++ b/a.txt\n@@ -5,7 +5,7 @@\n BEGIN\n   BEGIN\n     DECLARE\n-      v_sql ;\n+      v_sql text;\n       v_sqltemp text;\n       temp_id bigint;\n       v_pSearchChar VARCHAR(30);\n@@ -79,7 +79,7 @@\n         \n       END IF;\n       /* END */\n-      \n+      --Transaction\n     END ;\n   END ;\n --BEGIN\n@@ -129,7 +129,7 @@\n     v_AdmID BIGINT;\n     v_AdmUnitID BIGINT;\n     v_DoctorID BIGINT;\n-    v_PatientID ;\n+    v_PatientID BIGINT;\n     v_PatientUnitID BIGINT;\n     v_AddedBy BIGINT;\n   BEGIN\n@@ -183,7 +183,7 @@\n     AND Opd_Ipd_UnitId = @AdmUnitID\n     AND UnitID = @AdmUnitID\n     AND IsCancelled = 0\n-    \n+    AND IsBilled = 0;\n     IF (@totalselfamount = 0)  --------------- Auto discharge on Discharge order\n     BEGIN\n     SELECT TOP 1 @TypeID = id from M_DischargeType where status = 1";
+			$(document).ready(function() {
+				var $outputFormat = $('#diff-url-options-output-format');
+  				var $showFiles = $('#diff-url-options-show-files');
+  				var $matching = $('#diff-url-options-matching');
+  				var $wordsThreshold = $('#diff-url-options-match-words-threshold');
+  				var $matchingMaxComparisons = $('#diff-url-options-matching-max-comparisons');
+				$outputFormat
+					.add($showFiles)
+					.add($matching)
+					.add($wordsThreshold)
+					.add($matchingMaxComparisons)
+					.change(function(e) {
+	  					console.log('');
+	  					console.log(e);
+	  					console.log('');
+	  					showDiff();
+					});
+			    
+			    showDiff();
+			});
+			
+		</script>
+	</head>
+	<body>
+		<h2>Options:</h2>
+		<div class="row">
+          <div class="col-md-2 col-xs-12 col-15">
+            <label title="Output format of the HTML, either line by line or side by side">Output Format
+              <select class="options-label-value" id="diff-url-options-output-format" name="outputFormat">
+                <option value="line-by-line" selected="">Line by Line</option>
+                <option value="side-by-side">Side by Side</option>
+              </select>
+            </label>
+          </div>
+          <div class=" col-md-2 col-xs-12 col-15">
+            <label title="Show the file list summary before the diff">File Summary
+              <input class="options-label-value" id="diff-url-options-show-files" type="checkbox" name="showFiles" checked="">
+            </label>
+          </div>
+          <div class=" col-md-2 col-xs-12 col-15">
+            <label title="Level of matching for the comparison algorithm">Matching Type
+              <select class="options-label-value" id="diff-url-options-matching" name="matching">
+                <option value="lines">Lines</option>
+                <option value="words" selected="">Words</option>
+                <option value="none">None</option>
+              </select>
+            </label>
+          </div>
+          <div class=" col-md-2 col-xs-12 col-15">
+            <label title="Similarity threshold for the matching algorithm">Words Threshold
+              <input class="options-label-value" id="diff-url-options-match-words-threshold" type="number" name="matchWordsThreshold" value="0.25" step="0.05" min="0" max="1">
+            </label>
+          </div>
+          <div class=" col-md-2 col-xs-12 col-15">
+            <label title="Maximum number of comparison performed by the matching algorithm in a block of changes">Max
+              Comparisons
+              <input class="options-label-value" id="diff-url-options-matching-max-comparisons" type="number" name="matchingMaxComparisons" value="2500" step="100" min="0">
+            </label>
+          </div>
+        </div>
+        <div id="url-diff-container" style="margin: 0 auto;">
+        </div>
+        <pre id="diff_text" style="display:none">
+       		$$(DIFF_TEXT)$$
+       	</pre>
+	</body>
+</html>
